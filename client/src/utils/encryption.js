@@ -6,7 +6,7 @@ import CryptoJS from 'crypto-js';
  */
 export function encryptMessage(content, key) {
   const iv = CryptoJS.lib.WordArray.random(16);
-  const encrypted = CryptoJS.AES.encrypt(content, CryptoJS.enc.Utf8.parse(key), {
+  const encrypted = CryptoJS.AES.encrypt(content, CryptoJS.enc.Hex.parse(key), {
     iv,
     mode: CryptoJS.mode.CBC,
     padding: CryptoJS.pad.Pkcs7,
@@ -28,7 +28,7 @@ export function decryptMessage(ciphertext, key, ivHex) {
   try {
     if (!ciphertext || !key || !ivHex) return '';
     const iv = CryptoJS.enc.Hex.parse(ivHex);
-    const decrypted = CryptoJS.AES.decrypt(ciphertext, CryptoJS.enc.Utf8.parse(key), {
+    const decrypted = CryptoJS.AES.decrypt(ciphertext, CryptoJS.enc.Hex.parse(key), {
       iv,
       mode: CryptoJS.mode.CBC,
       padding: CryptoJS.pad.Pkcs7,

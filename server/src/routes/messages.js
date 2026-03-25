@@ -61,7 +61,7 @@ router.put('/:messageId/read', auth, async (req, res, next) => {
 
     // Verify user is member of the room
     const room = await Room.findOne({ _id: message.room, members: req.user._id });
-    if (!room) return res.status(403).json({ message: 'Not authorised' });
+    if (!room) return res.status(403).json({ message: 'Not authorized' });
 
     const alreadyRead = message.readBy.some(
       (r) => r.user.toString() === req.user._id.toString()

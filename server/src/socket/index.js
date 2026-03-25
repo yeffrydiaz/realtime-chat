@@ -233,8 +233,15 @@ function registerSocketHandlers(io) {
     socket.on('disconnect', async () => {
       console.log(`[socket] disconnected: ${user.username} (${socket.id})`);
       try {
-        await User.findByIdAndUpdate(user._id, { isOnline: false, lastSeen: new Date() });
-        socket.broadcast.emit('user-offline', { userId: user._id, lastSeen: new Date() });
+        // Only mark offline if the user has no other active connections
+        const allSockets = await io.fetchSockets();
+        const stillConnected = allSockets.some(
+          (s) => s.id !== socket.id && s.user?._id?.toString() === user._id.toString()
+        );
+        if (!stillConnected) {
+          await User.findByIdAndUpdate(user._id, { isOnline: false, lastSeen: new Date() });
+          socket.broadcast.emit('user-offline', { userId: user._id, lastSeen: new Date() });
+        }
       } catch (err) {
         console.error('[socket] disconnect cleanup error:', err);
       }

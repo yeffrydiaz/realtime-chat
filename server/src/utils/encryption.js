@@ -9,7 +9,7 @@ const { v4: uuidv4 } = require('uuid');
  */
 function encryptMessage(content, key) {
   const iv = CryptoJS.lib.WordArray.random(16);
-  const encrypted = CryptoJS.AES.encrypt(content, CryptoJS.enc.Utf8.parse(key), {
+  const encrypted = CryptoJS.AES.encrypt(content, CryptoJS.enc.Hex.parse(key), {
     iv,
     mode: CryptoJS.mode.CBC,
     padding: CryptoJS.pad.Pkcs7,
@@ -26,7 +26,7 @@ function encryptMessage(content, key) {
  */
 function decryptMessage(ciphertext, key, ivHex) {
   const iv = CryptoJS.enc.Hex.parse(ivHex);
-  const decrypted = CryptoJS.AES.decrypt(ciphertext, CryptoJS.enc.Utf8.parse(key), {
+  const decrypted = CryptoJS.AES.decrypt(ciphertext, CryptoJS.enc.Hex.parse(key), {
     iv,
     mode: CryptoJS.mode.CBC,
     padding: CryptoJS.pad.Pkcs7,

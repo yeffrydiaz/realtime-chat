@@ -174,7 +174,7 @@ router.delete('/:id/members/:userId', auth, async (req, res, next) => {
     const isAdmin = room.admin.toString() === req.user._id.toString();
 
     if (!isSelf && !isAdmin) {
-      return res.status(403).json({ message: 'Not authorised' });
+      return res.status(403).json({ message: 'Not authorized' });
     }
 
     room.members = room.members.filter((m) => m.toString() !== req.params.userId);

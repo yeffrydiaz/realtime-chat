@@ -11,12 +11,15 @@ router.get('/', auth, async (req, res, next) => {
     const { search = '' } = req.query;
     const limit = Math.min(50, Math.max(1, parseInt(req.query.limit, 10) || 20));
 
+    // Limit search query length to prevent ReDoS attacks
+    const searchTerm = search.trim().slice(0, 100);
+
     const filter = {
       _id: { $ne: req.user._id },
     };
 
-    if (search.trim()) {
-      const escaped = search.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    if (searchTerm) {
+      const escaped = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       filter.$or = [
         { username: { $regex: escaped, $options: 'i' } },
         { email: { $regex: escaped, $options: 'i' } },

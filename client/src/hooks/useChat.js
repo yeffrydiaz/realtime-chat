@@ -31,7 +31,7 @@ export default function useChat(roomId) {
         const res = await api.get(`/api/messages/${roomId}`, {
           params: { page: pageNum, limit: 50 },
         });
-        const fetched = (res.data.messages ?? res.data).map(decryptMsg);
+        const fetched = (res.data.messages ?? []).map(decryptMsg);
         if (pageNum === 1) {
           setMessages(fetched.reverse());
         } else {
