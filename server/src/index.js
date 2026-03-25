@@ -4,7 +4,7 @@ require('dotenv').config();
 
 const http = require('http');
 const { Server } = require('socket.io');
-const { createClient } = require('ioredis');
+const Redis = require('ioredis');
 const { createAdapter } = require('@socket.io/redis-adapter');
 
 const app = require('./app');
@@ -18,10 +18,13 @@ async function start() {
 
   const httpServer = http.createServer(app);
 
-  const pubClient = new createClient({
+  const redisOptions = {
     host: process.env.REDIS_HOST || 'localhost',
     port: parseInt(process.env.REDIS_PORT || '6379', 10),
-  });
+    lazyConnect: true,
+  };
+
+  const pubClient = new Redis(redisOptions);
   const subClient = pubClient.duplicate();
 
   pubClient.on('error', (err) => console.error('Redis pub error:', err));

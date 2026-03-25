@@ -88,7 +88,11 @@ function registerSocketHandlers(io) {
           return;
         }
 
-        const encryptionKey = process.env.ENCRYPTION_KEY || 'default-key-change-me';
+        const encryptionKey = process.env.ENCRYPTION_KEY;
+        if (!encryptionKey) {
+          if (typeof ack === 'function') ack({ error: 'Server encryption is not configured' });
+          return;
+        }
         let storedContent = '';
         let iv = '';
         let isEncrypted = false;
@@ -99,8 +103,13 @@ function registerSocketHandlers(io) {
           iv = encrypted.iv;
           isEncrypted = true;
         } else if (type === 'image' || type === 'file') {
-          // Media is stored as a base64 or URL reference; content may carry a caption
-          storedContent = content || '';
+          // Encrypt optional caption for media messages the same way as text
+          if (content) {
+            const encrypted = encryptMessage(content, encryptionKey);
+            storedContent = encrypted.ciphertext;
+            iv = encrypted.iv;
+            isEncrypted = true;
+          }
         }
 
         const message = await Message.create({

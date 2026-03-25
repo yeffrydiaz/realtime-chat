@@ -36,15 +36,13 @@ function decryptMessage(ciphertext, key, ivHex) {
 }
 
 /**
- * Generate a random symmetric key and a UUID key-pair identifier.
- * In a real E2E setup the client would hold the private key; here we
- * generate a server-side symmetric key that can be exchanged via the
- * public-key field stored on the User document.
+ * Generate a random symmetric encryption key and a UUID key identifier.
+ * Returns { encryptionKey, keyId }.
  */
-function generateKeyPair() {
-  const privateKey = CryptoJS.lib.WordArray.random(32).toString(CryptoJS.enc.Hex);
-  const publicKey = uuidv4();
-  return { privateKey, publicKey };
+function generateSymmetricKey() {
+  const encryptionKey = CryptoJS.lib.WordArray.random(32).toString(CryptoJS.enc.Hex);
+  const keyId = uuidv4();
+  return { encryptionKey, keyId };
 }
 
-module.exports = { encryptMessage, decryptMessage, generateKeyPair };
+module.exports = { encryptMessage, decryptMessage, generateSymmetricKey };
