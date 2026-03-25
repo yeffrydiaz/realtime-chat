@@ -119,7 +119,8 @@ npm start              # http://localhost:3000
 |---|---|---|---|
 | `PORT` | No | `5000` | HTTP server port |
 | `MONGODB_URI` | **Yes** | — | MongoDB connection string |
-| `REDIS_URL` | **Yes** | — | Redis connection URL |
+| `REDIS_HOST` | **Yes** | `localhost` | Redis server hostname |
+| `REDIS_PORT` | No | `6379` | Redis server port |
 | `JWT_SECRET` | **Yes** | — | Secret for signing JWTs |
 | `ENCRYPTION_KEY` | **Yes** | — | AES key for message encryption |
 | `CLIENT_URL` | No | `http://localhost:3000` | Allowed CORS origin |
@@ -171,14 +172,15 @@ All REST endpoints are prefixed with `/api`.
 
 | Direction | Event | Payload | Description |
 |---|---|---|---|
-| Client → Server | `join_room` | `{ roomId }` | Join a chat room |
-| Client → Server | `send_message` | `{ roomId, content, type }` | Send a message |
-| Client → Server | `typing` | `{ roomId, isTyping }` | Typing indicator |
+| Client → Server | `join-room` | `{ roomId }` | Join a chat room |
+| Client → Server | `send-message` | `{ roomId, content, type }` | Send a message |
+| Client → Server | `typing` | `{ roomId }` | Start typing indicator |
+| Client → Server | `stop-typing` | `{ roomId }` | Stop typing indicator |
 | Client → Server | `mark_read` | `{ roomId, messageId }` | Mark messages read |
-| Server → Client | `new_message` | Message object | Incoming message |
-| Server → Client | `user_typing` | `{ userId, isTyping }` | Remote typing event |
-| Server → Client | `message_read` | `{ userId, messageId }` | Read receipt |
-| Server → Client | `user_online` | `{ userId, online }` | Presence update |
+| Server → Client | `new-message` | Message object | Incoming message |
+| Server → Client | `typing` | `{ userId, username, roomId }` | Remote typing event |
+| Server → Client | `stop-typing` | `{ userId, roomId }` | Remote stopped typing |
+| Server → Client | `user-online` | `{ userId }` | Presence update |
 
 ---
 
