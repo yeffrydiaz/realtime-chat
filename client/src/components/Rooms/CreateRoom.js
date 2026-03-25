@@ -39,13 +39,22 @@ export default function CreateRoom({ onCreated, onClose }) {
       setError('Select at least one member.');
       return;
     }
+    const isGroup = selectedUsers.length > 1;
+    if (isGroup && !roomName.trim()) {
+      setError('Group chats require a name.');
+      return;
+    }
     setLoading(true);
     setError('');
     try {
+      const type = isGroup ? 'group' : 'private';
+      const name = isGroup
+        ? roomName.trim()
+        : selectedUsers[0].username;
       const payload = {
-        name: roomName || undefined,
+        name,
+        type,
         members: selectedUsers.map((u) => u._id),
-        isGroup: selectedUsers.length > 1,
       };
       const res = await api.post('/api/rooms', payload);
       onCreated(res.data.room ?? res.data);

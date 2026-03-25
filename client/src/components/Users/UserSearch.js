@@ -28,10 +28,10 @@ export default function UserSearch({ onSelect, onClose }) {
 
   const handleSelect = async (user) => {
     try {
-      // Create or find a DM room with this user
       const res = await api.post('/api/rooms', {
+        name: user.username,
+        type: 'private',
         members: [user._id],
-        isGroup: false,
       });
       onSelect(res.data.room ?? res.data);
     } catch (err) {
